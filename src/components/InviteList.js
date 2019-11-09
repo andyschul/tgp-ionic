@@ -1,15 +1,40 @@
-import React from 'react';
-import { IonList, IonItem, IonLabel } from '@ionic/react';
+import React, { useState } from 'react';
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/react-hooks';
+import { IonPage, IonContent, IonInput, IonButton } from '@ionic/react';
+import AppHeader from './AppHeader'
 
-export default function InviteList() {
+const INVITE_TO_GROUP = gql`
+  mutation inviteToGroup($groupId: ID!, $email: String) {
+    inviteToGroup(groupId: $groupId, email: $email) {
+      email
+    }
+  }
+`;
+
+const InviteList = (props) => {
+    const [email, setEmail] = useState('');
+    const [inviteToGroup] = useMutation(INVITE_TO_GROUP);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        inviteToGroup({ variables: { groupId: props.groupId, email: email } });
+      }
+
+      function handleChange(e) {
+        setEmail(e.target.value);
+      }
 
     return (
-        <IonList>
-            {[{name: 'test', id: 1}].map((tournament) => (
-                <IonItem button key={tournament.id}>
-                    <IonLabel>{tournament.name}</IonLabel>
-                </IonItem>
-            ))}
-        </IonList>
+
+                <form
+                onSubmit={handleSubmit}
+                >
+                    <IonInput placeholder="Email" value={email} onInput={handleChange}></IonInput>
+                    <IonButton type="submit">Save</IonButton>
+                </form>
+
     )
 }
+
+export default InviteList;

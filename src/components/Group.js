@@ -32,21 +32,18 @@ export default function Group(route) {
         <IonPage>
             <AppHeader />
             <IonContent className="ion-padding">
-            <div>Test</div>
-            <div>Test</div>
-            <div>Test</div>
-            <div>Test</div>
-            <div>Test</div>
+            <div>Group Name:</div>
             <div>{data.group.groupName}</div>
-            <div>Test</div>
+
+            <div>Invites:</div>
             {data.group.invites.map((email, idx) => (
                 <React.Fragment key={idx}>
                 <div>{email}</div>
                 <button>remove</button>
                 </React.Fragment>
             ))}
-            <div>Test</div>
-            <div>Test</div>
+
+        <div>Users:</div>
             {data.group.users.map((user,idx) => (
                 <div key={idx}>{user.firstName} {user.lastName}, {user.role}</div>
             ))}
