@@ -50,22 +50,36 @@ const App = () => (
 
 
 const signUpConfig = {
-  header: 'My Customized Sign Up',
+  header: 'Sign Up',
   hideAllDefaults: true,
   defaultCountryCode: '1',
   signUpFields: [
     {
       label: 'Email',
-      key: 'username',
+      key: 'email',
       required: true,
       displayOrder: 1,
+      type: 'string'
+    },
+    {
+      label: 'First name',
+      key: 'given_name',
+      required: true,
+      displayOrder: 2,
+      type: 'string'
+    },
+    {
+      label: 'Last name',
+      key: 'family_name',
+      required: true,
+      displayOrder: 3,
       type: 'string'
     },
     {
       label: 'Password',
       key: 'password',
       required: true,
-      displayOrder: 2,
+      displayOrder: 4,
       type: 'password'
     }
   ]

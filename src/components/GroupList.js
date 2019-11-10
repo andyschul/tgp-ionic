@@ -27,12 +27,10 @@ const GroupList = () => {
     );
     return (
         <IonContent>
-        {/*-- List of Text Items --*/}
         <IonList>
             {data.user.groups.map((group) => (
               <IonButton key={group.id} routerLink={`/groups/${group.id}`}>{group.groupName}</IonButton>
             ))}
-            <IonButton routerLink={`/groups`}>Create Group</IonButton>
     </IonList>
   </IonContent>
     )

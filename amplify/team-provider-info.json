@@ -1,14 +1,36 @@
 {
     "dev": {
         "awscloudformation": {
-            "AuthRoleName": "frontend-dev-20191025141911-authRole",
-            "UnauthRoleArn": "arn:aws:iam::704057430816:role/frontend-dev-20191025141911-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::704057430816:role/frontend-dev-20191025141911-authRole",
+            "AuthRoleName": "thegolfpool-dev-20191109195038-authRole",
+            "UnauthRoleArn": "arn:aws:iam::704057430816:role/thegolfpool-dev-20191109195038-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::704057430816:role/thegolfpool-dev-20191109195038-authRole",
             "Region": "us-east-1",
-            "DeploymentBucketName": "frontend-dev-20191025141911-deployment",
-            "UnauthRoleName": "frontend-dev-20191025141911-unauthRole",
-            "StackName": "frontend-dev-20191025141911",
-            "StackId": "arn:aws:cloudformation:us-east-1:704057430816:stack/frontend-dev-20191025141911/f17f5170-f753-11e9-93b1-12926a34023c"
+            "DeploymentBucketName": "thegolfpool-dev-20191109195038-deployment",
+            "UnauthRoleName": "thegolfpool-dev-20191109195038-unauthRole",
+            "StackName": "thegolfpool-dev-20191109195038",
+            "StackId": "arn:aws:cloudformation:us-east-1:704057430816:stack/thegolfpool-dev-20191109195038/1d042ad0-0354-11ea-8b1a-0a437bda7b86"
+        },
+        "categories": {
+            "auth": {
+                "thegolfpool057e9745057e9745": {}
+            }
+        }
+    },
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "thegolfpool-prod-20191109202841-authRole",
+            "UnauthRoleArn": "arn:aws:iam::704057430816:role/thegolfpool-prod-20191109202841-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::704057430816:role/thegolfpool-prod-20191109202841-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "thegolfpool-prod-20191109202841-deployment",
+            "UnauthRoleName": "thegolfpool-prod-20191109202841-unauthRole",
+            "StackName": "thegolfpool-prod-20191109202841",
+            "StackId": "arn:aws:cloudformation:us-east-1:704057430816:stack/thegolfpool-prod-20191109202841/6da935c0-0359-11ea-a690-0a933e7926f6"
+        },
+        "categories": {
+            "auth": {
+                "thegolfpool057e9745057e9745": {}
+            }
         }
     }
 }
