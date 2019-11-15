@@ -29,7 +29,7 @@ const GroupList = () => {
         <IonContent>
         <IonList>
             {data.user.groups.map((group) => (
-              <IonButton key={group.id} routerLink={`/groups/${group.id}`}>{group.groupName}</IonButton>
+              <IonButton key={group.id} routerLink={`/groups/${group.id}/${new Date().getFullYear()}`}>{group.groupName}</IonButton>
             ))}
     </IonList>
   </IonContent>

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
-import { IonPage, IonContent, IonInput, IonButton } from '@ionic/react';
-import AppHeader from './AppHeader'
+import { IonInput, IonButton } from '@ionic/react';
 
 const INVITE_TO_GROUP = gql`
   mutation inviteToGroup($groupId: ID!, $email: String) {

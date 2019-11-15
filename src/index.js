@@ -13,8 +13,8 @@ const httpLink = new HttpLink({
   })
   
   const middlewareAuthLink = new ApolloLink((operation, forward) => {
-    const lastAuthUser = localStorage.getItem('CognitoIdentityServiceProvider.4kllfac0ensrledet05qbs2dme.LastAuthUser');
-    const token = localStorage.getItem(`CognitoIdentityServiceProvider.4kllfac0ensrledet05qbs2dme.${lastAuthUser}.idToken`)
+    const lastAuthUser = localStorage.getItem('CognitoIdentityServiceProvider.4cmfst1kti8is4t1v2nm2f7in8.LastAuthUser');
+    const token = localStorage.getItem(`CognitoIdentityServiceProvider.4cmfst1kti8is4t1v2nm2f7in8.${lastAuthUser}.idToken`)
     operation.setContext({
       headers: {
         Authorization: token

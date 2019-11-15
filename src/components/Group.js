@@ -47,7 +47,7 @@ export default function Group(route) {
             {data.group.users.map((user,idx) => (
                 <div key={idx}>{user.firstName} {user.lastName}, {user.role}</div>
             ))}
-            <TournamentList />
+            <TournamentList year={route.match.params.year} groupId={route.match.params.id} />
             <InviteList groupId={route.match.params.id} />
             </IonContent>
         </IonPage>
