@@ -8,6 +8,7 @@ import CreateGroup from './components/CreateGroup'
 import Group from './components/Group'
 import JoinGroup from './components/JoinGroup'
 import Tournament from './components/Tournament'
+import TournamentPicks from './components/TournamentPicks'
 import Amplify from 'aws-amplify';
 import awsconfig from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
@@ -44,7 +45,8 @@ const App = () => (
         <Route exact={true} path="/groups" component={CreateGroup} />
         <Route exact={true} path="/groups/:id/:year" component={Group} />
         <Route exact={true} path="/groups/:groupId/tournaments/:tournamentId" component={Tournament} />
-        <Route path="/groups/:id/join" component={JoinGroup} />
+        <Route exact={true} path="/groups/:groupId/tournaments/:tournamentId/picks" component={TournamentPicks} />
+        <Route exact={true} path="/groups/:id/join" component={JoinGroup} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
