@@ -23,7 +23,7 @@ const GET_TOURNAMENT = gql`
   }
 `;
 
-export default function Tournament(route) {
+export default function TournamentPicks(route) {
     const { data, loading, error } = useQuery(
         GET_TOURNAMENT,
         { variables: { id: route.match.params.tournamentId } }
