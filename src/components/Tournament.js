@@ -33,8 +33,9 @@ export default function Tournament(route) {
         <IonPage>
             <AppHeader />
             <IonContent className="ion-padding">
-                <div>Tournament {data.tournament.name} {data.tournament.venue.name}!!!</div>
-                <IonButton routerLink={`/groups/${route.match.params.groupId}/tournaments/${route.match.params.tournamentId}/picks`}>Make Picks</IonButton>
+                <div>Tournament {data.tournament.name} at {data.tournament.venue.name}!</div>
+                <div><IonButton routerLink={`/groups/${route.match.params.groupId}/tournaments/${route.match.params.tournamentId}/picks`}>Make Picks</IonButton></div>
+                <IonButton routerLink={`/groups/${route.match.params.groupId}/tournaments/${route.match.params.tournamentId}/leaderboard`}>Leaderboard</IonButton>
             </IonContent>
         </IonPage>
     )

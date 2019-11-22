@@ -16,6 +16,7 @@ const GET_TOURNAMENT = gql`
                 id
                 firstName
                 lastName
+                country
             }
         }
     }
@@ -23,21 +24,29 @@ const GET_TOURNAMENT = gql`
 `;
 
 export default function Tournament(route) {
-    console.log(route.match.params.tournamentId)
     const { data, loading, error } = useQuery(
         GET_TOURNAMENT,
         { variables: { id: route.match.params.tournamentId } }
     );
     if (loading) return '';
     if (error) return `Error! ${error.message}`;
+
+    function handleSubmit(e, d) {
+        e.preventDefault();
+        console.log(e.target, d)
+      }
+
     return (
         <IonPage>
             <AppHeader />
             <IonContent className="ion-padding">
                 <div>Tournament {data.tournament.name}</div>
-                {data.tournament.groups.map(g => 
-                    <PlayerList key={g.id} groupId={g.id} players={g.players}></PlayerList>
+                <form onSubmit={handleSubmit}>
+                <IonButton type="submit">Save</IonButton>
+                {data.tournament.groups.map((g, idx) => 
+                    <PlayerList key={g.id} idx={idx} groupId={g.id} players={g.players}></PlayerList>
                 )}
+                </form>
             </IonContent>
         </IonPage>
     )
