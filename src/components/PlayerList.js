@@ -10,12 +10,12 @@ const PlayerList = (props) => {
     }
     return (
         <IonList>
-        <IonRadioGroup onIonChange={handleChange} value={props.players[7].id}>
+        <IonRadioGroup onIonChange={handleChange}>
         <IonListHeader>Group {props.groupId} {props.idx}</IonListHeader>
           {props.players.map(p => 
             <IonItem key={p.id}>
                 <IonLabel>{`${p.firstName} ${p.lastName} (${p.country})`}</IonLabel>
-                <IonRadio value={p.id} />
+                <IonRadio value={p.id} checked={p.isSelected} />
             </IonItem>
             )}
         </IonRadioGroup>

@@ -6,8 +6,8 @@ import AppHeader from './AppHeader'
 import PlayerList from './PlayerList'
 
 const GET_TOURNAMENT = gql`
-  query GetTournamentPicks($id: ID!) {
-    tournament(id: $id) {
+  query GetTournamentPicks($id: ID!, $groupId: ID) {
+    tournament(id: $id, groupId: $groupId) {
         id
         name
         groups {
@@ -17,6 +17,7 @@ const GET_TOURNAMENT = gql`
                 firstName
                 lastName
                 country
+                isSelected
             }
         }
     }
@@ -26,7 +27,7 @@ const GET_TOURNAMENT = gql`
 export default function TournamentPicks(route) {
     const { data, loading, error } = useQuery(
         GET_TOURNAMENT,
-        { variables: { id: route.match.params.tournamentId } }
+        { variables: { id: route.match.params.tournamentId, groupId: route.match.params.groupId } }
     );
     if (loading) return '';
     if (error) return `Error! ${error.message}`;
