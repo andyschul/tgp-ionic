@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { IonList, IonItem, IonButton, IonContent } from '@ionic/react';
+import { IonList, IonButton, IonContent } from '@ionic/react';
 import gql from 'graphql-tag';
 
 const GET_GROUPS = gql`

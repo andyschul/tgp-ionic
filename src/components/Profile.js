@@ -23,7 +23,7 @@ const UPDATE_USER = gql`
 `;
 
 const Profile = () => {
-    const { client, loading, error, data, updateQuery } = useQuery(GET_USER);
+    const { loading, error, data, updateQuery } = useQuery(GET_USER);
     const [updateUser] = useMutation(UPDATE_USER);
     if (loading) return 'Loading...';
     if (error) return `Error! ${error.message}`;

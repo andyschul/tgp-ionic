@@ -11,7 +11,6 @@ import {
 } from "apollo-client-preset";
 import { HttpLink } from 'apollo-link-http';
 import { setContext } from "apollo-link-context";
-import gql from 'graphql-tag';
 import { Auth } from 'aws-amplify';
 
 const httpLink = new HttpLink({
@@ -26,8 +25,6 @@ const authMiddleware = setContext(async (req, { headers }) => {
     },
   };
 });
-
-
 
 const client = new ApolloClient({
   link: from([authMiddleware, httpLink]),

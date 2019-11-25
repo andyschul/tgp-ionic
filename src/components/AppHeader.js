@@ -21,8 +21,6 @@ const AppHeader = () => {
 
     async function signOut() {
       Auth.signOut()
-      .then(data => console.log(data))
-      .catch(err => console.log(err));
     }
 
     return (

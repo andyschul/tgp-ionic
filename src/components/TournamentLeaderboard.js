@@ -1,9 +1,8 @@
 import React from 'react';
-import { IonContent, IonPage, IonButton, IonCol } from '@ionic/react';
+import { IonContent, IonPage } from '@ionic/react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import AppHeader from './AppHeader'
-import PlayerList from './PlayerList'
 
 const GET_TOURNAMENT = gql`
   query GetTournamentPicks($id: ID!) {
