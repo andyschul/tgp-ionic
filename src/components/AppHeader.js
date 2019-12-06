@@ -1,10 +1,9 @@
-import React from 'react';
-import { IonHeader, IonToolbar, IonTitle, IonButton } from '@ionic/react';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import React, {useEffect, useState} from 'react';
+import { IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonButtons } from '@ionic/react';
+import { API, graphqlOperation } from 'aws-amplify'
 import { Auth } from 'aws-amplify';
 
-const GET_USER = gql`
+const query = `
   {
     user {
       email
@@ -15,27 +14,40 @@ const GET_USER = gql`
 `;
 
 const AppHeader = () => {
-    const { client, loading, error, data } = useQuery(GET_USER);
-    if (loading) return 'Loading...';
-    if (error) return `Error! ${error.message}`;
-
-    async function signOut() {
-      Auth.signOut()
+  const [user, updateUser] = useState({})
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await API.graphql(graphqlOperation(query))
+        updateUser(res.data.user)
+      } catch (err) {
+        console.log('error: ', err)
+      }
     }
+    fetchData();
+  }, []);
 
-    return (
-        <IonHeader>
-            <IonToolbar>
-            <IonTitle>
-                <IonButton routerLink="/">Home</IonButton>{data.user.email}<IonButton routerLink="/profile">Profile</IonButton>
-                <IonButton onClick={() => {
-                  signOut().then(() => client.resetStore());
-                }}>Sign out</IonButton>
-            </IonTitle>
-            </IonToolbar>
-        </IonHeader>
-    )
+  async function signOut() {
+    Auth.signOut()
+  }
+
+  return (
+    <IonHeader>
+      <IonToolbar mode="ios">
+        <IonTitle>
+          <IonButton fill="clear" color="dark">
+            My Navigation Bar <IonIcon name="ios-arrow-down" />
+          </IonButton>
+        </IonTitle>
+        <IonButtons slot="primary">
+          <IonButton routerLink="/profile">Profile</IonButton>
+          <IonButton onClick={() => signOut()}>
+            <IonIcon slot="icon-only" name="person" />
+          </IonButton>
+        </IonButtons>
+      </IonToolbar>
+    </IonHeader>
+  )
 }
 
 export default AppHeader;
-

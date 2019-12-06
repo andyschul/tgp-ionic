@@ -17,7 +17,6 @@ const Home = () => {
           will be your guide.
         </p>
         <IonButton routerLink="/groups">Create Group</IonButton>
-        <GroupList/>
       </IonContent>
     </IonPage>
   );

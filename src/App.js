@@ -39,7 +39,7 @@ Amplify.configure(awsconfig);
 const App = () => (
   <IonApp>
     <IonReactRouter>
-      <IonRouterOutlet>
+      <IonRouterOutlet animated="false">
         <Route exact={true} path="/home" component={Home} />
         <Route exact={true} path="/" render={() => <Redirect to="/home" />} />
         <Route exact={true} path="/profile" component={Profile} />

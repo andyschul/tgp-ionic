@@ -14,7 +14,7 @@ import { setContext } from "apollo-link-context";
 import AWSAppSyncClient, {AUTH_TYPE} from "aws-appsync";
 import awsconfig from './aws-exports';
 import { Auth } from 'aws-amplify';
-
+import { Rehydrated } from 'aws-appsync-react'
 // const httpLink = new HttpLink({
 //   uri: 'http://localhost:4000/graphql'
 // })
@@ -44,7 +44,12 @@ const client = new AWSAppSyncClient({
   },
 });
 
-ReactDOM.render(
-<ApolloProvider client={client}>
-<App />
-</ApolloProvider>, document.getElementById('root'));
+const WithProvider = () => (
+    <ApolloProvider client={client}>
+      <Rehydrated>
+        <App />
+      </Rehydrated>
+    </ApolloProvider>
+  )
+  
+  export default WithProvider
