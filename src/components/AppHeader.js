@@ -2,24 +2,15 @@ import React, {useEffect, useState} from 'react';
 import { IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonButtons } from '@ionic/react';
 import { API, graphqlOperation } from 'aws-amplify'
 import { Auth } from 'aws-amplify';
-
-const query = `
-  {
-    user {
-      email
-      firstName
-      lastName
-    }
-  }
-`;
+import {getUser as GET_USER} from '../graphql/queries'
 
 const AppHeader = () => {
-  const [user, updateUser] = useState({})
+  const [user, updateUser] = useState({email: 'test'})
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await API.graphql(graphqlOperation(query))
-        updateUser(res.data.user)
+        const res = await API.graphql(graphqlOperation(GET_USER))
+        updateUser(res.data.getUser)
       } catch (err) {
         console.log('error: ', err)
       }

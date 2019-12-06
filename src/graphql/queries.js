@@ -24,3 +24,11 @@ export const listTodos = `query ListTodos(
   }
 }
 `;
+export const getUser = `query GetUser {
+  getUser {
+    email
+    firstName
+    lastName
+  }
+}
+`;

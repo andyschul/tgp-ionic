@@ -25,3 +25,11 @@ export const onDeleteTodo = `subscription OnDeleteTodo {
   }
 }
 `;
+export const onUpdateUser = `subscription OnUpdateUser {
+  onUpdateUser {
+    email
+    firstName
+    lastName
+  }
+}
+`;

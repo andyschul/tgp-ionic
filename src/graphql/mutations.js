@@ -25,3 +25,11 @@ export const deleteTodo = `mutation DeleteTodo($input: DeleteTodoInput!) {
   }
 }
 `;
+export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
+  updateUser(input: $input) {
+    email
+    firstName
+    lastName
+  }
+}
+`;
