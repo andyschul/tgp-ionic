@@ -36,7 +36,7 @@ const AppHeader = () => {
       <IonToolbar mode="ios">
         <IonTitle>
           <IonButton fill="clear" color="dark">
-            My Navigation Bar <IonIcon name="ios-arrow-down" />
+            My Navigation Bar {user.email} <IonIcon name="ios-arrow-down" />
           </IonButton>
         </IonTitle>
         <IonButtons slot="primary">
