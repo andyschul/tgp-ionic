@@ -29,6 +29,31 @@ export const getUser = `query GetUser {
     email
     firstName
     lastName
+    groups {
+      id
+      groupName
+      role
+      teamName
+      users {
+        firstName
+        lastName
+        role
+      }
+    }
+  }
+}
+`;
+export const getGroup = `query GetGroup($id: ID!) {
+  getGroup(id: $id) {
+    id
+    groupName
+    owner
+    invites
+    users {
+      firstName
+      lastName
+      role
+    }
   }
 }
 `;

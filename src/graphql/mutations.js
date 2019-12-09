@@ -30,6 +30,17 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     email
     firstName
     lastName
+    groups {
+      id
+      groupName
+      role
+      teamName
+      users {
+        firstName
+        lastName
+        role
+      }
+    }
   }
 }
 `;

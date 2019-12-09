@@ -30,6 +30,17 @@ export const onUpdateUser = `subscription OnUpdateUser {
     email
     firstName
     lastName
+    groups {
+      id
+      groupName
+      role
+      teamName
+      users {
+        firstName
+        lastName
+        role
+      }
+    }
   }
 }
 `;
