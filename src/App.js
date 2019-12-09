@@ -44,7 +44,7 @@ const App = () => (
         <Route exact={true} path="/" render={() => <Redirect to="/home" />} />
         <Route exact={true} path="/profile" component={Profile} />
         <Route exact={true} path="/groups" component={CreateGroup} />
-        <Route exact={true} path="/groups/:id/:year" component={Group} />
+        <Route exact={true} path="/groups/:id/:year" component={(props) => <Group timestamp={new Date().toString()} {...props}/> } />
         <Route exact={true} path="/groups/:groupId/tournaments/:tournamentId" component={Tournament} />
         <Route exact={true} path="/groups/:groupId/tournaments/:tournamentId/picks" component={TournamentPicks} />
         <Route exact={true} path="/groups/:groupId/tournaments/:tournamentId/leaderboard" component={TournamentLeaderboard} />

@@ -19,13 +19,11 @@ export default function Group(route) {
           }
         }
         fetchData();
-      }, []);
-
-
+      }, [route.match.params.id]);
 
     return (
         <IonPage>
-            <AppHeader />
+            <AppHeader groupId={group.id} groupName={group.groupName} />
             <IonContent className="ion-padding">
             <div>Group Name:</div>
             <div>{group.groupName}</div>

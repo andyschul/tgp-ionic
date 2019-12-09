@@ -4,7 +4,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { Auth } from 'aws-amplify';
 import {getUser as GET_USER} from '../graphql/queries'
 
-const AppHeader = () => {
+const AppHeader = (props) => {
   const [user, updateUser] = useState({})
   const [showPopover, setShowPopover] = useState(false);
 
@@ -29,7 +29,7 @@ const AppHeader = () => {
       <IonToolbar mode="ios">
         <IonTitle>
           <IonButton fill="clear" color="dark" onClick={() => setShowPopover(true)}>
-            Groups <IonIcon name="ios-arrow-down" />
+            {props.groupId ? props.groupName : 'Groups'} <IonIcon name="ios-arrow-down" />
           </IonButton>
 
           <IonPopover
