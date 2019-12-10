@@ -57,3 +57,51 @@ export const getGroup = `query GetGroup($id: ID!) {
   }
 }
 `;
+export const getSchedule = `query GetSchedule($year: String!) {
+  getSchedule(year: $year) {
+    id
+    name
+    startDate
+  }
+}
+`;
+export const getTournament = `query GetTournament($id: ID!) {
+  getTournament(id: $id) {
+    id
+    name
+    startDate
+    endDate
+    purse
+    winningShare
+    venue {
+      id
+      name
+    }
+    leaderboard {
+      id
+      firstName
+      lastName
+      country
+      status
+      money
+      position
+      score
+      strokes
+      tied
+    }
+  }
+}
+`;
+export const getTournamentGroups = `query GetTournamentGroups($tournamentId: ID!, $groupId: ID!) {
+  getTournamentGroups(tournamentId: $tournamentId, groupId: $groupId) {
+    id
+    players {
+      id
+      firstName
+      lastName
+      country
+      isSelected
+    }
+  }
+}
+`;

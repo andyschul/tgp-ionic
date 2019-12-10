@@ -12,6 +12,61 @@ module.exports.getSchedule = async event => {
   return schedule.tournaments;
 };
 
+module.exports.getTournament = async event => {
+  let tournament = await getAsync(`tournaments:${event.arguments.id}`);
+  tournament = JSON.parse(tournament);
+  return tournament;
+};
+
+module.exports.getTournamentLeaderboard = async event => {
+  let leaderboardRes = await getAsync(`tournaments:${event.source.id}:leaderboard`);
+  let leaderboard = JSON.parse(leaderboardRes);
+  return leaderboard.leaderboard;
+};
+
+module.exports.getTournamentGroups = async event => {
+  let groupsRes = await getAsync(`tournaments:${event.arguments.tournamentId}:groups`);
+  let groups = groupsRes ? JSON.parse(groupsRes): [];
+  const params = {
+    TableName: process.env.DYNAMO_TABLE,
+    Key: {
+      id: `User-${event.identity.sub}`,
+      type: `${event.arguments.groupId}#${event.arguments.tournamentId}`
+    }
+  }
+  let picks = [];
+  try {
+    let userTournament = await docClient.get(params).promise();
+    picks = userTournament.Item.picks;
+  } catch (err) {
+    console.log(err);
+  }
+
+  const playerMapper = (players) => {
+    return players.map(p => ({
+      id: p.id,
+      firstName: p.first_name,
+      lastName: p.last_name,
+      country: p.country,
+      status: p.status || null,
+      money: p.money || null,
+      position: p.position || null,
+      score: p.score || null,
+      strokes: p.strokes || null,
+      tied: p.tied || null
+    }))
+  }
+  groups = groups.map((g,i)=>({id:i+1, players: playerMapper(g)}))
+  for (let g of groups) {
+    for (let p of g.players) {
+      if (picks.includes(p.id)) {
+        p.isSelected = true;
+      }
+    }
+  }
+  return groups;
+};
+
 module.exports.updateUser = async event => {
   const groupParams = {
     TableName: process.env.DYNAMO_TABLE,

@@ -1,34 +1,23 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import AppHeader from './AppHeader'
-
-const GET_TOURNAMENT = gql`
-  query GetTournamentPicks($id: ID!) {
-    tournament(id: $id) {
-        id
-        name
-        leaderboard {
-            id
-            firstName
-            lastName
-            position
-            money
-            score
-            status
-        }
-    }
-  }
-`;
+import { API, graphqlOperation } from 'aws-amplify'
+import {getTournament as GET_TOURNAMENT} from '../graphql/queries'
 
 export default function TournamentLeaderboard(route) {
-    const { data, loading, error } = useQuery(
-        GET_TOURNAMENT,
-        { variables: { id: route.match.params.tournamentId } }
-    );
-    if (loading) return '';
-    if (error) return `Error! ${error.message}`;
+    const [tournament, updateTournament] = useState({})
+
+    useEffect(() => {
+        async function fetchData() {
+          try {
+            const res = await API.graphql(graphqlOperation(GET_TOURNAMENT, {id: route.match.params.tournamentId}))
+            updateTournament(res.data.getTournament)
+          } catch (err) {
+            console.log('error: ', err)
+          }
+        }
+        fetchData();
+      }, [route.match.params.tournamentId]);
     return (
         <IonPage>
             <AppHeader />
@@ -45,7 +34,7 @@ export default function TournamentLeaderboard(route) {
                         </tr>
                     </thead>
                     <tbody>
-                    {data.tournament.leaderboard.map((g, idx) => 
+                    {tournament && tournament.leaderboard && tournament.leaderboard.map((g, idx) => 
                         <tr key={g.id} >
                             <td style={{minWidth: 200}}>{g.firstName}</td>
                             <td style={{minWidth: 200}}>{g.position}</td>

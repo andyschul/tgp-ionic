@@ -1,49 +1,37 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { IonContent, IonToast, IonPage, IonList, IonRadioGroup, IonListHeader, IonLabel, IonRadio, IonItem } from '@ionic/react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { API, graphqlOperation } from 'aws-amplify'
+import {getTournamentGroups as GET_TOURNAMENT_GROUPS} from '../graphql/queries'
 import AppHeader from './AppHeader'
 
-const GET_TOURNAMENT = gql`
-  query GetTournamentPicks($id: ID!, $groupId: ID) {
-    tournament(id: $id, groupId: $groupId) {
-        id
-        name
-        groups {
-            id
-            players {
-                id
-                firstName
-                lastName
-                country
-                isSelected
-            }
-        }
-    }
-  }
-`;
-
-const UPDATE_PICKS = gql`
-  mutation updatePicks($groupId: ID!, $tournamentId: ID!, $picks: [String]) {
-    updatePicks(groupId: $groupId, tournamentId: $tournamentId, picks: $picks) {
-      success
-    }
-  }
-`;
+// const UPDATE_PICKS = gql`
+//   mutation updatePicks($groupId: ID!, $tournamentId: ID!, $picks: [String]) {
+//     updatePicks(groupId: $groupId, tournamentId: $tournamentId, picks: $picks) {
+//       success
+//     }
+//   }
+// `;
 
 export default function TournamentPicks(route) {
-    const { data, loading, error, updateQuery } = useQuery(
-        GET_TOURNAMENT,
-        { variables: { id: route.match.params.tournamentId, groupId: route.match.params.groupId } }
-    );
-    const [updatePicks] = useMutation(UPDATE_PICKS);
+    const [tournamentGroups, updateTournamentGroups] = useState([])
+
+    useEffect(() => {
+        async function fetchData() {
+          try {
+            const res = await API.graphql(graphqlOperation(GET_TOURNAMENT_GROUPS, { tournamentId: route.match.params.tournamentId, groupId: route.match.params.groupId }))
+            updateTournamentGroups(res.data.getTournamentGroups)
+          } catch (err) {
+            console.log('error: ', err)
+          }
+        }
+        fetchData();
+      }, [route.match.params.tournamentId]);
+
     const [showToast, setShowToast] = useState(false);
-    if (loading) return '';
-    if (error) return `Error! ${error.message}`;
 
     function handleSubmit() {
         let picks = []
-        for (let g of data.tournament.groups) {
+        for (let g of tournamentGroups) {
             for (let p of g.players) {
                 if (p.isSelected) {
                     picks.push(p.id);
@@ -51,13 +39,13 @@ export default function TournamentPicks(route) {
                 }
             }
         }
-        updatePicks({ variables: { groupId: route.match.params.groupId, tournamentId: route.match.params.tournamentId, picks: picks } });
+        // TODO: mutation to update picks
+        console.log(picks)
     }
 
     function handleSelect(idx, playerId) {
-        updateQuery(x=>{
-            x.tournament.groups[idx].players = x.tournament.groups[idx].players.map(p=>({...p, isSelected: p.id === playerId}))
-        })
+        tournamentGroups[idx].players = tournamentGroups[idx].players.map(p=>({...p, isSelected: p.id === playerId}));
+        updateTournamentGroups(tournamentGroups)
         setShowToast(true)
       }
 
@@ -83,8 +71,8 @@ export default function TournamentPicks(route) {
                 }
                 ]}
             />
-                <div>Tournament {data.tournament.name}</div>
-                {data.tournament.groups.map((g, idx) => 
+                <div>Make selections</div>
+                {tournamentGroups.map((g, idx) => 
                     <IonList key={g.id}>
                         <IonRadioGroup>
                         <IonListHeader>Group {g.id}</IonListHeader>

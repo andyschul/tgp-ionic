@@ -20,5 +20,14 @@ functions:
   getSchedule:
     handler: handler.getSchedule
 
+  getTournament:
+    handler: handler.getTournament
+
+  getTournamentLeaderboard:
+    handler: handler.getTournamentLeaderboard
+
+  getTournamentGroups:
+    handler: handler.getTournamentGroups
+
   updateUser:
     handler: handler.updateUser
