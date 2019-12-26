@@ -5,9 +5,10 @@ import TournamentList from './TournamentList'
 import InviteList from './InviteList'
 import AppHeader from './AppHeader'
 import {getGroup as GET_GROUP} from '../graphql/queries'
+import { Auth } from 'aws-amplify';
 
 export default function Group(route) {
-    const [group, updateGroup] = useState({})
+    const [group, updateGroup] = useState({users:[], invites:[]})
 
     useEffect(() => {
         async function fetchData() {
@@ -29,7 +30,7 @@ export default function Group(route) {
             <div>{group.groupName}</div>
 
             <div>Invites:</div>
-            {group.invites && group.invites.map((email, idx) => (
+            {group.invites.map((email, idx) => (
                 <React.Fragment key={idx}>
                 <div>{email}</div>
                 <button>remove</button>
@@ -37,12 +38,11 @@ export default function Group(route) {
             ))}
 
         <div>Users:</div>
-            {group.users && group.users.map((user,idx) => (
+            {group.users.map((user,idx) => (
                 <div key={idx}>{user.firstName} {user.lastName}, {user.role}</div>
             ))}
             <TournamentList year={route.match.params.year} groupId={route.match.params.id} />
-            {/* <TournamentList year={route.match.params.year} groupId={route.match.params.id} />
-            <InviteList groupId={route.match.params.id} /> */}
+            <InviteList groupId={route.match.params.id} />
             </IonContent>
         </IonPage>
     )

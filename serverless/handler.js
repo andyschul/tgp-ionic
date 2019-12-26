@@ -24,6 +24,39 @@ module.exports.getTournamentLeaderboard = async event => {
   return leaderboard.leaderboard;
 };
 
+
+module.exports.inviteToGroup = async event => {
+  const params = {
+    TableName: process.env.DYNAMO_TABLE,
+    Key: {
+      id: event.arguments.input.groupId,
+      type: event.arguments.input.groupId
+    }
+  }
+  let group = await docClient.get(params).promise();
+  if (!group.Item.invites.includes(event.arguments.input.email)) {
+    group.Item.invites.push(event.arguments.input.email);
+    const updateParams = {
+      TableName:process.env.DYNAMO_TABLE,
+      Key:{
+          "id": event.arguments.input.groupId,
+          "type": event.arguments.input.groupId
+      },
+      UpdateExpression: "set invites = :i",
+      ExpressionAttributeValues:{
+          ":i": group.Item.invites
+      },
+      ReturnValues:"UPDATED_NEW"
+    }
+
+    let res = await docClient.update(updateParams).promise();
+    return {response: 'true'}
+  }
+  console.log(group)
+  return {response: 'false'}
+}
+
+
 module.exports.getTournamentGroups = async event => {
   let groupsRes = await getAsync(`tournaments:${event.arguments.tournamentId}:groups`);
   let groups = groupsRes ? JSON.parse(groupsRes): [];

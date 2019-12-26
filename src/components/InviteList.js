@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
-import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { API, graphqlOperation } from 'aws-amplify'
+import {inviteToGroup as INVITE_TO_GROUP} from '../graphql/mutations'
 import { IonInput, IonButton } from '@ionic/react';
 
-const INVITE_TO_GROUP = gql`
-  mutation inviteToGroup($groupId: ID!, $email: String) {
-    inviteToGroup(groupId: $groupId, email: $email) {
-      email
-    }
-  }
-`;
 
 const InviteList = (props) => {
-    const [email, setEmail] = useState('');
-    const [inviteToGroup] = useMutation(INVITE_TO_GROUP);
+  const [email, setEmail] = useState('');
 
-    function handleSubmit(e) {
-        e.preventDefault();
-        inviteToGroup({ variables: { groupId: props.groupId, email: email } });
-      }
+  async function handleSubmit(e) {
+      e.preventDefault();
+      const res = await API.graphql(graphqlOperation(INVITE_TO_GROUP, {input: {groupId: props.groupId, email: email}}))
+      setEmail('')
+    }
 
-      function handleChange(e) {
-        setEmail(e.target.value);
-      }
+    function handleChange(e) {
+      setEmail(e.target.value);
+    }
 
     return (
 

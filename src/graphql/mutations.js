@@ -44,3 +44,9 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
   }
 }
 `;
+export const inviteToGroup = `mutation InviteToGroup($input: InviteToGroupInput!) {
+  inviteToGroup(input: $input) {
+    response
+  }
+}
+`;

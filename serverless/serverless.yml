@@ -31,3 +31,6 @@ functions:
 
   updateUser:
     handler: handler.updateUser
+
+  inviteToGroup:
+    handler: handler.inviteToGroup
