@@ -25,6 +25,20 @@ export const deleteTodo = `mutation DeleteTodo($input: DeleteTodoInput!) {
   }
 }
 `;
+export const createGroup = `mutation CreateGroup($input: CreateGroupInput!) {
+  createGroup(input: $input) {
+    id
+    groupName
+    owner
+    invites
+    users {
+      firstName
+      lastName
+      role
+    }
+  }
+}
+`;
 export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
   updateUser(input: $input) {
     email
@@ -47,6 +61,24 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
 export const inviteToGroup = `mutation InviteToGroup($input: InviteToGroupInput!) {
   inviteToGroup(input: $input) {
     response
+    msg
+    success
+  }
+}
+`;
+export const joinGroup = `mutation JoinGroup($input: JoinGroupInput!) {
+  joinGroup(input: $input) {
+    response
+    msg
+    success
+  }
+}
+`;
+export const updatePicks = `mutation UpdatePicks($input: UpdatePicksInput!) {
+  updatePicks(input: $input) {
+    response
+    msg
+    success
   }
 }
 `;
