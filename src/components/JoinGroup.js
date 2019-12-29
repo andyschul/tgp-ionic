@@ -1,45 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonContent, IonPage, IonButton, IonInput } from '@ionic/react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { API, graphqlOperation } from 'aws-amplify'
+import {getGroup as GET_GROUP, getUser as GET_USER} from '../graphql/queries'
+import {joinGroup as JOIN_GROUP} from '../graphql/mutations'
 import AppHeader from './AppHeader'
 
-const GET_GROUP_DETAILS = gql`
-  query GroupDetails($groupId: ID!) {
-    group(id: $groupId) {
-        id
-        groupName
-        invites
-    }
-    user {
-        email
-    }
-  }
-`;
-
-const JOIN_GROUP = gql`
-  mutation joinGroup($groupId: ID!, $name: String) {
-    joinGroup(groupId: $groupId, name: $name) {
-      msg
-    }
-  }
-`;
-
 export default function JoinGroup(route) {
-    const [joinGroup] = useMutation(JOIN_GROUP);
-    const { data, loading, error } = useQuery(
-        GET_GROUP_DETAILS,
-        { variables: { groupId: route.match.params.id } }
-    );
+    const [user, updateUser] = useState({})
+    const [group, updateGroup] = useState({users:[], invites:[]})
     const [name, setName] = useState('');
-    if (loading) return '';
-    if (error) return `Error! ${error.message}`;
 
 
-    function handleSubmit(e) {
+    useEffect(() => {
+      async function fetchData() {
+        try {
+          const groupRes = await API.graphql(graphqlOperation(GET_GROUP, {id: route.match.params.id}))
+          updateGroup(groupRes.data.getGroup)
+          const userRes = await API.graphql(graphqlOperation(GET_USER))
+          updateUser(userRes.data.getUser)
+        } catch (err) {
+          console.log('error: ', err)
+        }
+      }
+      fetchData();
+    }, [route.match.params.id]);
+
+
+    async function handleSubmit(e) {
       e.preventDefault();
-      let resp = joinGroup({ variables: { groupId: data.group.id, name: name } });
-      console.log(resp)
+      await API.graphql(graphqlOperation(JOIN_GROUP, {input: {groupId: group.id, name: name}}))
     }
 
     function handleChange(e) {
@@ -51,9 +40,9 @@ export default function JoinGroup(route) {
             <AppHeader />
             <IonContent className="ion-padding">
                 <div>Join Group</div>
-                <div>{data.group.groupName}</div>
-                <div>{data.user.email}</div>
-                {data.group.invites.includes(data.user.email) ?
+                <div>{group.groupName}</div>
+                <div>{user.email}</div>
+                {group.invites.includes(user.email) ?
                     <form
                     onSubmit={handleSubmit}
                     >

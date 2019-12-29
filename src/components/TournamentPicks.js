@@ -2,15 +2,8 @@ import React, {useState, useEffect} from 'react';
 import { IonContent, IonToast, IonPage, IonList, IonRadioGroup, IonListHeader, IonLabel, IonRadio, IonItem } from '@ionic/react';
 import { API, graphqlOperation } from 'aws-amplify'
 import {getTournamentGroups as GET_TOURNAMENT_GROUPS} from '../graphql/queries'
+import {updatePicks as UPDATE_PICKS} from '../graphql/mutations'
 import AppHeader from './AppHeader'
-
-// const UPDATE_PICKS = gql`
-//   mutation updatePicks($groupId: ID!, $tournamentId: ID!, $picks: [String]) {
-//     updatePicks(groupId: $groupId, tournamentId: $tournamentId, picks: $picks) {
-//       success
-//     }
-//   }
-// `;
 
 export default function TournamentPicks(route) {
     const [tournamentGroups, updateTournamentGroups] = useState([])
@@ -29,7 +22,7 @@ export default function TournamentPicks(route) {
 
     const [showToast, setShowToast] = useState(false);
 
-    function handleSubmit() {
+    async function handleSubmit() {
         let picks = []
         for (let g of tournamentGroups) {
             for (let p of g.players) {
@@ -39,8 +32,11 @@ export default function TournamentPicks(route) {
                 }
             }
         }
-        // TODO: mutation to update picks
-        console.log(picks)
+        try {
+            await API.graphql(graphqlOperation(UPDATE_PICKS, {input: {groupId: route.match.params.groupId, tournamentId: route.match.params.tournamentId, picks: picks}}))
+          } catch (err) {
+            console.log('error: ', err)
+          }
     }
 
     function handleSelect(idx, playerId) {

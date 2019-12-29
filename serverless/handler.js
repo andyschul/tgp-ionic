@@ -24,16 +24,69 @@ module.exports.getTournamentLeaderboard = async event => {
   return leaderboard.leaderboard;
 };
 
+module.exports.createGroup = async event => {
+  const groupId = `Group-${event.uuid}`
+  const year = new Date().getFullYear();
+
+  const userParams = {
+    TableName: process.env.DYNAMO_TABLE,
+    Key: {
+      id: `User-${event.identity.sub}`,
+      type: `User-${event.identity.sub}`
+    }
+  }
+  let user = await docClient.get(userParams).promise();
+
+  const params = {
+    RequestItems: {
+      [process.env.DYNAMO_TABLE]: [
+        {
+          PutRequest: {
+            Item: {
+              'id': groupId,
+              'type': groupId,
+              'groupName': event.arguments.input.name,
+              'seasons': [year],
+              'invites': [],
+              'owner': `User-${event.identity.sub}`
+            }
+          }
+        },
+        {
+          PutRequest: {
+            Item: {
+              'id': groupId,
+              'type': `User-${event.identity.sub}`,
+              'firstName': user.Item.firstName,
+              'lastName': user.Item.lastName,
+              'teamName': `Team ${user.Item.lastName}`,
+              'role': 'owner',
+              'groupName': event.arguments.input.name,
+              'data': groupId
+            }
+          }
+        }
+      ]
+    }
+  }
+  try {
+    await docClient.batchWrite(params).promise();
+  }
+  catch (err) {
+    console.log("Error", err)
+  }
+  return {groupName: event.arguments.input.name};
+}
+
 module.exports.updatePicks = async event => {
-  let groupsRes = await getAsync(`tournaments:${event.arguments.input.tournamentId}:groups`);
-  groups = JSON.parse(groupsRes);
-  console.log(groups)
-  let picks = []
+  let groups = await getAsync(`tournaments:${event.arguments.input.tournamentId}:groups`);
+  groups = JSON.parse(groups);
+  let picks = [];
   for (let g of groups) {
     for (let p of g) {
       if (event.arguments.input.picks.includes(p.id)) {
-        picks.push(p.id)
-        break
+        picks.push(p.id);
+        break;
       }
     }
   }
@@ -50,8 +103,8 @@ module.exports.updatePicks = async event => {
     },
     ReturnValues:"UPDATED_NEW"
   }
-  let res = await docClient.update(updateParams).promise();
-  return {success: true}
+  await docClient.update(updateParams).promise();
+  return {success: true};
 };
 
 module.exports.inviteToGroup = async event => {
@@ -78,11 +131,10 @@ module.exports.inviteToGroup = async event => {
       ReturnValues:"UPDATED_NEW"
     }
 
-    let res = await docClient.update(updateParams).promise();
-    return {response: 'true'}
+    await docClient.update(updateParams).promise();
+    return {success: true}
   }
-  console.log(group)
-  return {response: 'false'}
+  return {success: false}
 }
 
 module.exports.joinGroup = async event => {
@@ -95,10 +147,18 @@ module.exports.joinGroup = async event => {
   }
   let group = await docClient.get(groupParams).promise();
 
-  if (!group.Item.invites.includes(event.identity.claims.email)) {
+  const userParams = {
+    TableName: process.env.DYNAMO_TABLE,
+    Key: {
+      id: `User-${event.identity.sub}`,
+      type: `User-${event.identity.sub}`
+    }
+  }
+  let user = await docClient.get(userParams).promise();
+  if (!group.Item.invites.includes(user.Item.email)) {
     return {msg: 'Not invited'}
   }
-  group.Item.invites = group.Item.invites.filter(email => email !== event.identity.claims.email)
+  group.Item.invites = group.Item.invites.filter(email => email !== user.Item.email)
   const params = {
     RequestItems: {
       [process.env.DYNAMO_TABLE]: [
@@ -112,8 +172,8 @@ module.exports.joinGroup = async event => {
             Item: {
               'id': event.arguments.input.groupId,
               'type': event.identity.sub,
-              'firstName': event.identity.claims.given_name,
-              'lastName': event.identity.claims.family_name,
+              'firstName': user.Item.firstName,
+              'lastName': user.Item.lastName,
               'teamName': event.arguments.input.name,
               'role': 'member',
               'groupName': group.Item.groupName,
@@ -125,7 +185,7 @@ module.exports.joinGroup = async event => {
     }
   }
   try {
-    let group = await docClient.batchWrite(params).promise();
+    await docClient.batchWrite(params).promise();
   }
   catch (err) {
     console.log("Error", err)
@@ -199,7 +259,7 @@ module.exports.updateUser = async event => {
     }
   };
   try {
-    let group = await docClient.batchWrite(batchParams).promise();
+    await docClient.batchWrite(batchParams).promise();
   }
   catch (err) {
     console.log("Error", err);

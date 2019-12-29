@@ -40,3 +40,6 @@ functions:
 
   updatePicks:
     handler: handler.updatePicks
+
+  createGroup:
+    handler: handler.createGroup
