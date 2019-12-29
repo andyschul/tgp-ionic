@@ -34,3 +34,9 @@ functions:
 
   inviteToGroup:
     handler: handler.inviteToGroup
+
+  joinGroup:
+    handler: handler.joinGroup
+
+  updatePicks:
+    handler: handler.updatePicks

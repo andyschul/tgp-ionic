@@ -24,6 +24,35 @@ module.exports.getTournamentLeaderboard = async event => {
   return leaderboard.leaderboard;
 };
 
+module.exports.updatePicks = async event => {
+  let groupsRes = await getAsync(`tournaments:${event.arguments.input.tournamentId}:groups`);
+  groups = JSON.parse(groupsRes);
+  console.log(groups)
+  let picks = []
+  for (let g of groups) {
+    for (let p of g) {
+      if (event.arguments.input.picks.includes(p.id)) {
+        picks.push(p.id)
+        break
+      }
+    }
+  }
+
+  const updateParams = {
+    TableName:process.env.DYNAMO_TABLE,
+    Key:{
+        "id": `User-${event.identity.sub}`,
+        "type": `${event.arguments.input.groupId}#${event.arguments.input.tournamentId}`
+    },
+    UpdateExpression: "set picks = :i",
+    ExpressionAttributeValues:{
+        ":i": picks
+    },
+    ReturnValues:"UPDATED_NEW"
+  }
+  let res = await docClient.update(updateParams).promise();
+  return {success: true}
+};
 
 module.exports.inviteToGroup = async event => {
   const params = {
@@ -56,6 +85,53 @@ module.exports.inviteToGroup = async event => {
   return {response: 'false'}
 }
 
+module.exports.joinGroup = async event => {
+  const groupParams = {
+    TableName: process.env.DYNAMO_TABLE,
+    Key: {
+      id: event.arguments.input.groupId,
+      type: event.arguments.input.groupId
+    }
+  }
+  let group = await docClient.get(groupParams).promise();
+
+  if (!group.Item.invites.includes(event.identity.claims.email)) {
+    return {msg: 'Not invited'}
+  }
+  group.Item.invites = group.Item.invites.filter(email => email !== event.identity.claims.email)
+  const params = {
+    RequestItems: {
+      [process.env.DYNAMO_TABLE]: [
+        {
+          PutRequest: {
+            Item: group.Item
+          }
+        },
+        {
+          PutRequest: {
+            Item: {
+              'id': event.arguments.input.groupId,
+              'type': event.identity.sub,
+              'firstName': event.identity.claims.given_name,
+              'lastName': event.identity.claims.family_name,
+              'teamName': event.arguments.input.name,
+              'role': 'member',
+              'groupName': group.Item.groupName,
+              'data': event.arguments.input.groupId
+            }
+          }
+        }
+      ]
+    }
+  }
+  try {
+    let group = await docClient.batchWrite(params).promise();
+  }
+  catch (err) {
+    console.log("Error", err)
+  }
+  return {msg: 'success'};
+}
 
 module.exports.getTournamentGroups = async event => {
   let groupsRes = await getAsync(`tournaments:${event.arguments.tournamentId}:groups`);
